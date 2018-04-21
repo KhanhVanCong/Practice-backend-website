@@ -1,0 +1,137 @@
+﻿@using HTLegal.Models
+@model E_Home_Content
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var p = ViewBag.p;
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <a href="/admin/homepage/Index">Home</a>
+        </li>
+        <li>
+            <b>Nội Dung</b>
+        </li>
+    </ul>
+</div>
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["success"]
+        </div>
+    }
+    else if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["error"]
+        </div>
+    }
+
+
+<!-- danh sach -->
+<div class="box span4">
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2>Thiết lập thông tin sử dụng</h2>
+        </div>
+        <div class="box-content">
+            <form action="/admin/homepage/SaveContent/" method="post" role="form" class="form-horizontal" enctype = "multipart/form-data">
+                @Html.HiddenFor(w => w.Id)
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề giới thiệu</label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Welcome, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Mô tả </label>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(w => w.Description, new { @class = "form-control", @style = "height: 100px"})
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Thông tin nổi bật 1 </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Info_1, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Thông tin nổi bật 2 </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Info_2, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề dịch vụ cung cấp </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Title_FeatureServices, new { @class = "form-control"})
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề luật sư </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Title_Attorney_Area, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề blog </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Title_Blog_Area, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề Biểu mẫu </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Title_Form_Submit, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Ảnh Biểu mẫu</label>
+                    <div class="col-xs-4">
+                        <img src="~/Content/HtLegal/img/@Model.Image_875x510_RightSubmit" alt="No Image" width="330" height="200" />
+                        <br /><p class="center">Kích thước: 875x510</p>
+                        <p class="center">
+                            <a href="#" id="btchangepicture" onclick="UploadImg()" class="btn btn-mini">Chọn Hình</a>&nbsp&nbsp<span id="nameImg"></span>&nbsp&nbsp<a href="/admin/homepage/DeletePictureContent/@Model.Id" class="btn btn-mini">Delete</a>
+                        </p>
+                        <input type="file" id="picture" name="picture" style="display:none" />
+                    </div>
+                </div>
+                @if(p["home_update_content"] == true)
+                {
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label"> </label>
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function UploadImg() {
+            $("#picture").trigger('click');
+            $('#picture').change(function ()
+            {
+                var fileName = $('#picture').val().split('\\').pop();
+                $('#nameImg').html(fileName);
+            })
+        };
+
+
+    </script>
+}

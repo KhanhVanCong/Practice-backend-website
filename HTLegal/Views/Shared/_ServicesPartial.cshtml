@@ -1,0 +1,90 @@
+﻿@using HTLegal.Models
+
+
+@{
+    HTLegalContext db = new HTLegalContext();
+    var services = db.E_Feature_Services.ToList();
+    var Title = db.E_Home_Content.FirstOrDefault();
+}
+
+
+
+
+<section id="featured-services-area">
+    <div class="container">
+        <div class="featured-services">
+            <div class="section-title text-center">
+                <h2><span>@Title.Title_FeatureServices</span></h2>
+            </div>
+            @if (services.Count <= 2)
+            {
+                <div class="row">
+                    <div class="top-featured">
+                        <!--Star Single Featured Services-->
+                        @for (var i = 0; i < services.Count; i++)
+                        {
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                <div class="single-featured">
+                                    <div class="single-featured-icon alignleft">
+                                        @*<i class="flaticon-familiar17"></i>*@
+                                        <img src="~/Content/htlegal/img/practice/icon/@services[i].Icon" />
+                                    </div>
+                                    <div class="single-featured-text">
+                                        <h5>@services[i].Title</h5>
+                                        <p>@services[i].Description</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <!--End Single Featured Services-->
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    <div class="top-featured">
+                        <!--Star Single Featured Services-->
+                        @for (var i = 0; i <= 2; i++)
+                        {
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                <div class="single-featured">
+                                    <div class="single-featured-icon alignleft">
+                                        @*<i class="flaticon-familiar17"></i>*@
+                                        <img src="~/Content/htlegal/img/practice/icon/@services[i].Icon" />
+                                    </div>
+                                    <div class="single-featured-text">
+                                        <h5>@services[i].Title</h5>
+                                        <p>@services[i].Description</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <!--End Single Featured Services-->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="bottom-featured">
+                        <!--Star Single Featured Services-->
+                        @for (var i = 3; i < services.Count; i++)
+                        {
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                <div class="single-featured">
+                                    <div class="single-featured-icon alignleft">
+                                        @*<i class="flaticon-familiar17"></i>*@
+                                        <img src="~/Content/htlegal/img/practice/icon/@services[i].Icon" />
+                                    </div>
+                                    <div class="single-featured-text">
+                                        <h5>@services[i].Title</h5>
+                                        <p>@services[i].Description</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <!--End Single Featured Services-->
+                </div>
+            }
+        </div>
+    </div>
+</section>

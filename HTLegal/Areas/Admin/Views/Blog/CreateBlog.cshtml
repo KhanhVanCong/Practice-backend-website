@@ -1,0 +1,171 @@
+﻿@using HTLegal.Models
+@model E_Blog
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    HTLegal.Models.E_Users curMem = HTLegal.ViewController.EAuthority.GetCurrentMember();
+    HTLegalContext db = new HTLegalContext();
+    var blogReply = db.E_Blog_Reply.Where(r => r.BlogId == Model.Id).ToList();
+    var p = ViewBag.p;
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <a href="/admin/blog/blog">Blog</a>
+        </li>
+        <li>
+            <b>Chi Tiết</b>
+        </li>
+    </ul>
+</div>
+
+<a class="btn btn-primary btn-sm" href="/admin/blog/blog">Trở lại</a>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["success"]
+    </div>
+}
+else if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["error"]
+    </div>
+}
+
+<div class="box span4">
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2>Thông tin Chi Tiết</h2>
+        </div>
+        <div class="box-content">
+            <form action="/admin/blog/CreateBlog/" method="post" role="form" class="form-horizontal" enctype="multipart/form-data">
+                @Html.HiddenFor(w => w.Id)
+                <input type="hidden" name="fullname" value="@curMem.FullName" />
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Ảnh đại diện </label>
+                    <div class="col-xs-4">
+                        @if (Model.Id > 0)
+                        {
+                            <img src="~/Content/HTLegal/img/blog/@Model.Picture_810x305" alt="No Image" width="300" height="113" />
+                        }
+                        else
+                        {
+                            <img src="~/Content/HTLegal/img/no-img.png" alt="No Image" width="330" height="200" />
+                        }
+                        <br /><p class="center">Kích thước: 810x305</p>
+                        <p class="center">
+                            <a href="#" id="btchangepicture" onclick="UploadImg()" class="btn btn-mini">Chọn Hình</a>&nbsp&nbsp<span id="nameImg"></span>&nbsp&nbsp
+                            @if (Model.Id > 0)
+                            {
+                                <a href="/admin/blog/DeletePicture?id=@Model.Id" class="btn btn-mini">Xóa</a>
+                            }
+                        </p>
+                        <input type="file" id="picture" name="picture" style="display:none" />
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu Đề </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Title, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Mô Tả </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Description, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label" style="margin-bottom:15px;">Nội Dung </label>
+                    <div class="col-xs-12">
+                        @Html.TextAreaFor(w => w.Content, new { @class = "form-control", @style = "width:500px; height: 150px" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Hoạt Động </label>
+                    <div class="col-xs-4">
+                        @Html.CheckBox("IsActiceHome", Model.IsActive == true ? true : false, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label"> </label>
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary">Save changes </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--Feedback History-->
+@if (p["blog_viewcomment"] == true)
+{
+    foreach (var item in blogReply)
+    {
+        <div class="box col-md-11" style="float:right">
+            <div class="box-header well" @if (item.IsActive == false) { @Html.Raw(@"style=""background-color:#c3c3c3;""")  }>
+                <h2>
+                    <span><i class="glyphicon glyphicon-comment"></i> Bình Luận từ <strong style="color: green">@item.CreatedBy</strong>  vào lúc @item.CreatedAt.Value.ToString("dd/MM/yyyy HH:mm tt") &nbsp;&nbsp;&nbsp;</span>
+                    @if(item.IsActive == true)
+            {
+                if(p["blog_lockcomment"] == true)
+                {
+            <span><a class="btn btn-success btn-xs" href="/admin/blog/LockComment/@item.Id?fullname=@curMem.FullName" onclick="return confirm('Bạn có chắc muốn khóa bình luận này không ?')">Khóa </a></span>
+                }
+            }
+            else
+            {
+                if (p["blog_reactivecomment"] == true)
+                {
+            <span><a class="btn btn-danger btn-xs" href="/admin/blog/ActiveComment/@item.Id?fullname=@curMem.FullName">ReActive </a></span>
+                }
+            }
+                </h2>
+            </div>
+            <div class="box-inner">
+                <div class="box-content">
+                    <ul class="dashboard-list">
+                        <li>
+                            @Html.Raw(item.Content)
+                        </li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/Content/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="~/Content/ckfinder/ckfinder.js"></script>
+
+    <script type="text/javascript">
+        CKEDITOR.replace('Content');
+        CKFinder.setupCKEditor(null, '/Content/ckfinder');
+        function UploadImg() {
+            $("#picture").trigger('click');
+            $('#picture').change(function () {
+                var fileName = $('#picture').val().split('\\').pop();
+                $('#nameImg').html(fileName);
+            })
+        };
+    </script>
+}

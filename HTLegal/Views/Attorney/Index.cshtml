@@ -1,0 +1,77 @@
+﻿@using HTLegal.Models
+@model IEnumerable<E_Attorneys>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    HTLegalContext db = new HTLegalContext();
+    var attorney = db.E_CMS_Attorney.FirstOrDefault();
+}
+
+
+<!--Start Breadcrumb Text area-->
+<section class="breadcrumb-area" style="background: rgba(0, 0, 0, 0) url('/Content/HTLegal/img/@attorney.Logo_1920x400') no-repeat; background-position: center; background-size:cover; position: relative;">
+    <div class="breadcrumb-text-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="breadcrumb-text text-center">
+                        <h1>Luật Sư</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Breadcrumb Text area-->
+<!--Start Best attorney Area-->
+<section id="best-attorney-area" class="anim-5-all">
+    <div class="container">
+        <div class="row">
+            <div class="our-attorneys">
+                <div class="section-title text-center">
+                    <span>@attorney.SubTitle</span>
+                    <h2><span>@attorney.Title</span></h2>
+                    <p>@attorney.Content</p>
+                </div>
+
+                @foreach (var item in Model)
+                {
+                <!--Start Single Best Attorney-->
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="single-attorney single-best-attorney">
+                            <div class="attorney-image-holder">
+                                <img src="~/Content/htlegal/img/attorneys/@item.Picture_270x288" alt="" >
+                                <div class="attorney-overlay">
+                                    <div class="read-full-bio">
+                                        <a href="/attorney/detail/@item.UserId">Chi Tiết</a>
+                                    </div>
+                                    <div class="attorney-ninus-icon">
+                                        <img src="~/Content/htlegal/img/attorney-ninus-icon.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="attorney-plus-icon">
+                                    <img src="~/Content/htlegal/img/attorney-plus-icon.png" alt="">
+                                </div>
+                            </div>
+                            <div class="attorney-name text-center">
+                                <h5>@item.FullName</h5>
+                                <p>@item.Position</p>
+                                <h4>Lĩnh vực hoạt động:</h4>
+                                <p class="practice">@item.PractiveAreas</p>
+                                <div class="phone-and-mail-number">
+                                    <p>Phone: @item.E_Users.CellPhone</p>
+                                    <p>E-mail: @item.E_Users.Email</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <!--End Single Best Attorney-->
+                }
+
+
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Best attorney Area-->

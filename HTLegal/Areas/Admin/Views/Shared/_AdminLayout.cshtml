@@ -1,0 +1,301 @@
+﻿
+@{
+    string controller = ViewContext.RouteData.Values["controller"].ToString().ToLower();
+    string action = ViewContext.RouteData.Values["action"].ToString().ToLower();
+    HTLegal.Models.E_Users curMem = HTLegal.ViewController.EAuthority.GetCurrentMember();
+    var p = HTLegal.ViewController.EAuthority.CheckPermission("system_config");
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        ===
+        This comment should NOT be removed.
+
+        Charisma v2.0.0
+
+        Copyright 2012-2014 Muhammad Usman
+        Licensed under the Apache License v2.0
+        http://www.apache.org/licenses/LICENSE-2.0
+
+        http://usman.it
+        http://twitter.com/halalit_usman
+        ===
+    -->
+    <meta charset="utf-8">
+    <title>@ViewBag.title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Law, Luật,Tư vấn luật, Luật doanh nghiệp, MBA, Nhượng quyền thương mại, Thanh Thảo, Luật sư, Khởi kiện, Khiếu nại, Nhà đất">
+    <meta name="author" content="HTLaw">
+
+    <!-- The styles -->
+    <link id="bs-css" href="~/content/admin/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href="~/content/admin/css/charisma-app.css" rel="stylesheet">
+    @*    <link href='~/content/admin/bower_components/fullcalendar/dist/fullcalendar.css' rel='stylesheet'>
+        <link href='~/content/admin/bower_components/fullcalendar/dist/fullcalendar.print.css' rel='stylesheet' media='print'>*@
+    <link href='~/content/admin/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='~/content/admin/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='~/content/admin/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='~/content/admin/bower_components/bootstrap-tour/build/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='~/content/admin/css/jquery.noty.css' rel='stylesheet'>
+    <link href='~/content/admin/css/noty_theme_default.css' rel='stylesheet'>
+    <link href='~/content/admin/css/elfinder.min.css' rel='stylesheet'>
+    <link href='~/content/admin/css/elfinder.theme.css' rel='stylesheet'>
+    <link href='~/content/admin/css/jquery.iphone.toggle.css' rel='stylesheet'>
+    @*    <link href='~/content/admin/css/uploadify.css' rel='stylesheet'>*@
+    <link href='~/content/admin/css/animate.min.css' rel='stylesheet'>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="~/Content/admin/bower_components/jquery/jquery.min.js"></script>
+
+
+    <!-- The fav icon -->
+    @*   <link rel="shortcut icon" href="img/favicon.ico">*@
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script type="text/javascript">
+        function submitform() {
+            $("div#wait_overlay").show();
+        }
+
+        $(function () {
+            $(".datepicker").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "dd/mm/yy",
+                yearRange: "-50:+10"
+            });
+
+        });
+    </script>
+    <script>
+        (function (w, d, s, g, js, fs) {
+            g = w.gapi || (w.gapi = {}); g.analytics = { q: [], ready: function (f) { this.q.push(f); } };
+            js = d.createElement(s); fs = d.getElementsByTagName(s)[0];
+            js.src = 'https://apis.google.com/js/platform.js';
+            fs.parentNode.insertBefore(js, fs); js.onload = function () { g.load('analytics'); };
+        }(window, document, 'script'));
+    </script>
+
+</head>
+
+<body>
+    <div id="wait_overlay" style="opacity: 0.2; height: 100%; width: 100%; background-color: grey; position: fixed; left: 0px; top: 0px; z-index: 1001; display: none">
+        <p style="position: fixed; top: 30%; left: 50%; margin-left: -25px; text-align: center; padding-top: 10px;">
+            @*<strong style="color: grey">LOADING... </strong>*@
+            <img src="~/Content/admin/img/ajax-loaders/ajax-loader-9.gif" style="width: 50px" />
+        </p>
+    </div>
+
+
+    <!-- topbar starts -->
+    <div class="navbar navbar-default" role="navigation">
+
+        <div class="navbar-inner">
+            <button type="button" class="navbar-toggle pull-left animated flip">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <a class="navbar-brand" href="/">
+                @*<img alt="Charisma Logo" src="img/logo20.png" class="hidden-xs"/>*@
+                <span style="width:500px">HT LEGAL MANAGEMENT</span>
+            </a>
+
+            <!-- user dropdown starts -->
+            <div class="btn-group pull-right">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <i class="glyphicon glyphicon-user"></i>
+                    <span class="hidden-sm hidden-xs">
+                        @curMem.FullName @if (string.IsNullOrWhiteSpace(curMem.RolesName) == false)
+                        {<span> - @curMem.RolesName</span>}
+                    </span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="/admin/user/profile/@curMem.Id">Your Profile</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/admin/home/logout">Logout</a></li>
+                </ul>
+            </div>
+
+            @*<ul class="collapse navbar-collapse nav navbar-nav top-menu">
+                    <li><a href="#"><i class="glyphicon glyphicon-globe"></i> Visit Site</a></li>
+                </ul>*@
+
+        </div>
+    </div>
+    <!-- topbar ends -->
+    <div class="ch-container">
+        <div class="row">
+
+            <!-- left menu starts -->
+            <div class="col-sm-2 col-lg-2">
+                <div class="sidebar-nav">
+                    <div class="nav-canvas">
+                        <div class="nav-sm nav nav-stacked">
+
+                        </div>
+                        <ul class="nav nav-pills nav-stacked main-menu">
+                            <li class="nav-header">Main</li>
+
+                            <li @if (controller == "home") { @Html.Raw(@"class=""active""") ; }><a href="/admin/home/dashboard"><i class="glyphicon glyphicon-dashboard"></i><span> Bảng thông tin</span></a></li>
+
+                            <li>
+                                <a @if (controller == "users") { @Html.Raw(@"class=""active""") ; } href="/admin/users"><i class="glyphicon glyphicon-user"></i><span> Thành viên</span></a>
+                            </li>
+
+                            <li class="accordion">
+                                <a href="#"><i class="glyphicon glyphicon-briefcase"></i><span> Luật Sư </span></a>
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li @if (controller == "attorney" && (action == "index" || action == "create")) { @Html.Raw(@"class=""active""")  }>
+                                        <a href="/admin/attorney/index"><span> Thông tin Luật Sư</span></a>
+                                    </li>
+                                    <li @if (controller == "attorney" && action == "content") { @Html.Raw(@"class=""active""")   }>
+                                        <a href="/admin/attorney/content"><span> Thông tin chung</span></a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-header hidden-md">Quản lý nội dung</li>
+                            <li class="accordion">
+                                <a href="#"><i class="glyphicon glyphicon-home"></i><span> Trang Chủ </span></a>
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li @if (controller == "homepage" && (action == "index" || action == "create")) {@Html.Raw(@"class=""active"""); }><a href="/admin/homepage/Index" >Banner</a></li>
+                                    <li @if (controller == "homepage" && action == "content") {@Html.Raw(@"class=""active"""); }><a href="/admin/homepage/content">Nội dung</a></li>
+                                    <li @if (controller == "homepage" && (action == "client" || action == "createclient")) { @Html.Raw(@"class=""active""") ; }><a href="/admin/homepage/client">Đánh giá Khách hàng</a></li>                          
+                                 </ul>
+                            </li>
+                            <li class="accordion">
+                                <a href="#"><i class="glyphicon glyphicon-leaf"></i><span> Dịch Vụ </span></a>
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li @if (controller == "services" && (action == "index" || action == "create")) { @Html.Raw(@"class=""active""") ; }><a href="/admin/services/Index">Icon</a></li>
+                                    <li @if (controller == "services" && (action == "news" || action == "createnew")) { @Html.Raw(@"class=""active""")  ; }><a href="/admin/services/news">Bài Viết</a></li>
+                                    <li @if (controller == "services" && action == "content") { @Html.Raw(@"class=""active""") ; }><a href="/admin/services/content">Thông tin chung</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/admin/aboutus"><i class="glyphicon glyphicon-book"></i><span> Về Chúng Tôi</span></a></li>
+                            <li><a href="/admin/contactus"><i class="glyphicon glyphicon-phone-alt"></i><span> Liên Hệ</span></a></li>
+                            <li class="accordion">
+                                <a href="#"><i class="glyphicon glyphicon-cloud"></i><span> Blog </span></a>
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li @if (controller == "blog" && action == "index") { @Html.Raw(@"class=""active""")  ; }><a href="/admin/blog/Index">Banner</a></li>
+                                    <li @if (controller == "blog" && (action == "blog" || action == "createblog")) { @Html.Raw(@"class=""active""")   ; }><a href="/admin/blog/blog">Bài Viết</a></li>
+                                </ul>
+                            </li>
+
+                            @* <li class="accordion">
+                                    <a href="#"><i class="glyphicon glyphicon-plus"></i><span> Accordion Menu</span></a>
+                                    <ul class="nav nav-pills  nav-stacked">
+                                        <li><a href="#">Child Menu 1  </a></li>
+                                        <li><a href="#">Child Menu 2 sdf fsd f</a></li>
+                                    </ul>
+                                </li>*@
+
+                            <li class="nav-header hidden-md">Hệ Thống</li>
+                            <li  @if (controller == "configuration") { @Html.Raw(@"class=""active""")  ; }><a class="ajax-link" href="/admin/configuration"><i class="glyphicon  glyphicon-cog"></i><span> Thông tin công ty</span></a></li>
+                            <li  @if (controller == "accessmanagement") { @Html.Raw(@"class=""active""")  ; }><a class="ajax-link" href="/admin/accessmanagement"><i class="glyphicon glyphicon-eye-open"></i><span> Quyền truy cập</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--/span-->
+            <!-- left menu ends -->
+
+            <noscript>
+                <div class="alert alert-block col-md-12">
+                    <h4 class="alert-heading">Warning!</h4>
+
+                    <p>
+                        You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a>
+                        enabled to use this site.
+                    </p>
+                </div>
+            </noscript>
+
+
+            <div id="content" class="col-lg-10 col-sm-10">
+                <!-- content starts -->
+                @RenderBody()
+
+                <!-- content ends -->
+            </div><!--/#content.col-md-0-->
+
+
+        </div><!--/fluid-row-->
+
+
+
+        <hr>
+
+        @*<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">×</button>
+                            <h3>Settings</h3>
+                        </div>
+                        <div class="modal-body">
+                            <p>Here settings can be configured...</p>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+                            <a href="#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+
+        <footer class="row">
+            <p class="col-md-9 col-sm-9 col-xs-12 copyright">&copy; <a href="http://#" target="_blank">HT Legal</a> 2017</p>
+            <p class="col-md-3 col-sm-3 col-xs-12 powered-by">Hôm nay: @DateTime.Now.ToString("dd/MM/yyyy")</p>
+        </footer>
+
+    </div><!--/.fluid-container-->
+    <!-- external javascript -->
+    <script src="~/content/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="~/content/admin/js/jquery.cookie.js"></script>
+    <!-- data table plugin -->
+    <script src='~/content/admin/js/jquery.dataTables.min.js'></script>
+
+    <!-- select or dropdown enhancer -->
+    <script src="~/content/admin/bower_components/chosen/chosen.jquery.min.js"></script>
+
+    <!-- plugin for gallery image view -->
+    <script src="~/content/admin/bower_components/colorbox/jquery.colorbox-min.js"></script>
+
+    <!-- notification plugin -->
+    <script src="~/content/admin/js/jquery.noty.js"></script>
+
+    <!-- library for making tables responsive -->
+    <script src="~/content/admin/bower_components/responsive-tables/responsive-tables.js"></script>
+
+    <!-- star rating plugin -->
+    <script src="~/content/admin/js/jquery.raty.min.js"></script>
+
+    <!-- for iOS style toggle switch -->
+    <script src="~/content/admin/js/jquery.iphone.toggle.js"></script>
+
+    <!-- autogrowing textarea plugin -->
+    <script src="js/jquery.autogrow-textarea.js"></script>
+
+    <!-- application script for Charisma demo -->
+    <script src="~/content/admin/js/charisma.js"></script>
+
+
+    @RenderSection("scripts", false);
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+﻿@using HTLegal.Models
+@model E_CMS_ConTactUs
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var p = ViewBag.p;
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <b>Liên Hệ</b>
+        </li>
+    </ul>
+</div>
+<div class="box-content alerts">
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["success"]
+        </div>
+    }
+    else if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["error"]
+        </div>
+    }
+
+</div>
+
+<!-- danh sach -->
+<div class="box span4">
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h>Thiết lập thông tin sử dụng</h>
+        </div>
+        <div class="box-content">
+            <form action="/admin/contactus/Save/" method="post" role="form" class="form-horizontal" enctype="multipart/form-data">
+                @Html.HiddenFor(w => w.Id)
+                <h3>Thông Tin Chung</h3>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Banner</label>
+                    <div class="col-xs-4">
+                        <img src="~/Content/HtLegal/img/@Model.Logo_1920x400" alt="No Image" width="330" height="200" />
+                        <br /><p class="center">Kích thước: 1920x400</p>
+                        <p class="center">
+                            <a href="#" id="btchangepicture" onclick="UploadImg()" class="btn btn-mini">Chọn Hình</a>&nbsp&nbsp<span id="nameImg"></span>&nbsp&nbsp<a href="/admin/contactus/DeleteLogo/@Model.Id" class="btn btn-mini">Delete</a>
+                        </p>
+                        <input type="file" id="picture" name="picture" style="display:none" />
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề chính </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Title, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề phụ </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.SubTitle, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Nội dung </label>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(w => w.Content, new { @class = "form-control", @style = "height: 200px" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Liên kết bản đồ </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Map, new { @class = "form-control" })
+                    </div>
+                </div>
+                <hr />
+                <h3>Nhân Viên Chăm Sóc Khách Hàng</h3>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Ảnh đại diện</label>
+                    <div class="col-xs-4">
+                        <img class="center" src="~/Content/HtLegal/img/@Model.Picture_141x141" alt="No Image" width="141" height="141" />
+                        <br /><p class="center">Kích thước: 141x141</p>
+                        <p class="center">
+                            <a href="#" id="btchangepictureright" onclick="UploadImgRight()" class="btn btn-mini">Chọn Hình</a>&nbsp&nbsp<span id="nameImgRight"></span>&nbsp&nbsp<a href="/admin/contactus/DeleteLogo?id=@Model.Id&position=right" class="btn btn-mini">Delete</a>
+                        </p>
+                        <input type="file" id="picture_right" name="picture_right" style="display:none" />
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Họ Tên </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.FullName, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Chức vụ </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Position, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Phone </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Phone, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Email </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Email, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Facebook </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Facebook, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Twitter </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Twifter, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Google </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Google, new { @class = "form-control" })
+                    </div>
+                </div>
+                @if (p["contact_update"] == true)
+                {
+                    <div class="form-group form-group-sm">
+                        <label class="col-sm-2 control-label"> </label>
+                        <div class="col-xs-4">
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function UploadImg() {
+            $("#picture").trigger('click');
+            $('#picture').change(function () {
+                var fileName = $('#picture').val().split('\\').pop();
+                $('#nameImg').html(fileName);
+            })
+        };
+
+        function UploadImgRight() {
+            $("#picture_right").trigger('click');
+            $('#picture_right').change(function () {
+                var fileName = $('#picture_right').val().split('\\').pop();
+                $('#nameImgRight').html(fileName);
+            })
+        };
+
+
+    </script>
+}

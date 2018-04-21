@@ -1,0 +1,174 @@
+﻿@using HTLegal.Models
+@model E_Attorneys
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <a href="/admin/attorney/Index">Luật sư</a>
+        </li>
+        <li>
+            <b>Thêm luật sư mới</b>
+        </li>
+    </ul>
+</div>
+
+<a class="btn btn-primary btn-sm" href="/admin/attorney/Index">Trở lại</a>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["success"]
+    </div>
+}
+else if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["error"]
+    </div>
+}
+
+<div class="box span4">
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2>Thông tin luật sư</h2>
+        </div>
+        <div class="box-content">
+            <form action="/admin/attorney/Create/" method="post" role="form" class="form-horizontal" enctype="multipart/form-data">
+                @Html.HiddenFor(w => w.UserId)
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Ảnh đại diện </label>
+                    <div class="col-xs-4">
+                        @if (Model.UserId > 0)
+                        {
+                            <img src="~/Content/HTLegal/img/attorneys/@Model.Picture_270x288" alt="No Image" width="270" height="288" />
+                        }
+                        else
+                        {
+                            <img src="~/Content/HTLegal/img/attorneys/no_image.jpg" alt="No Image" width="330" height="200" />
+                        }
+                        <br /><p class="center">Kích thước: 470x638</p>
+                        <p class="center">
+                            <a href="#" id="btchangepicture" onclick="UploadImg()" class="btn btn-mini">Chọn Hình</a>&nbsp&nbsp<span id="nameImg"></span>&nbsp&nbsp
+                            @if (Model.UserId > 0)
+                            {
+                                <a href="/admin/attorney/deleteyourpicture?id=@Model.UserId" class="btn btn-mini">Xóa</a>
+                            }
+                        </p>
+                        <input type="file" id="picture" name="picture" style="display:none" />
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Họ </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.E_Users.FirstName, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tên </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.E_Users.LastName, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Email </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.E_Users.Email, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Phone </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.E_Users.CellPhone, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Chức vụ</label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Position, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Lĩnh vực hoạt động</label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.PractiveAreas, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">FaceBook</label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Facebook, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Google Plus</label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Google, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Twitter </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Twifter, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Kinh Nghiệm Thực Tiễn </label>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(w => w.ProfessionalExperiences, new { @class = "form-control",@style = "width:500px; height: 150px" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Xuất hiện ở Home </label>
+                    <div class="col-xs-4">
+                        @*@if (Model.IsActiceHome == true)
+                        {
+                            <input id="showAtHome" type="checkbox" checked="checked" value="true" name="IsActiceHome" />
+                        }
+                        else
+                        { 
+                       
+                            <input id="showAtHome" type="checkbox" value="false" name="IsActiceHome" />
+                        }*@
+
+                        @Html.CheckBox("IsActiceHome", Model.IsActiceHome == true ? true : false , new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label"> </label>
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/Content/nicEdit/nicEdit.js"></script>
+
+    <script type="text/javascript">
+        new nicEditor({ iconsPath: '../../../Content/nicEdit/nicEditorIcons.gif' }).panelInstance('ProfessionalExperiences');
+        function UploadImg() {
+            $("#picture").trigger('click');
+            $('#picture').change(function () {
+                var fileName = $('#picture').val().split('\\').pop();
+                $('#nameImg').html(fileName);
+            })
+        };
+
+
+    </script>
+}

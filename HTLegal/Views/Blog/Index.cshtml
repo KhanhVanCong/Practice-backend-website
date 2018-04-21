@@ -1,0 +1,92 @@
+﻿@using HTLegal.Models
+@model IEnumerable<E_Blog>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    HTLegalContext db = new HTLegalContext();
+    var banner = db.E_CMS_Blog.FirstOrDefault();
+    HTLegal.Models.E_Users curMem = HTLegal.ViewController.EAuthority.GetCurrentMember();
+    int totalRecords = int.Parse(TempData["totalRecords"].ToString());
+    int page = int.Parse(TempData["page"].ToString());
+    int rpp = 8;
+    var p = ViewBag.p;
+}
+
+
+<!--Start Breadcrumb Text area-->
+<section class="breadcrumb-area" style="background: rgba(0, 0, 0, 0) url('/Content/HTLegal/img/@banner.Logo_1920x400') no-repeat; background-position: center; background-size:cover; position: relative;">
+    <div class="breadcrumb-text-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="breadcrumb-text text-center">
+                        <h1>Blog</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Breadcrumb Text area-->
+
+<!--Start blog v3 area-->
+<section id="blog-v3-area">
+    @if(curMem != null && p["blog_add"] == true)
+    { 
+        @*<div class="section-title text-center">
+            <button class="btn-success" style="border: 1px solid;border-radius:10px;" onclick="location.href='@Url.Action("createblog", "blog")'">Thêm Bài Viết Mới</button>
+        </div>*@   
+        <div id="createBlog">
+            <a href="/blog/createblog" title="Thêm Bài Viết Mới" >
+                <img src="~/Content/HTLegal/img/add_blog.png" />
+                <p style="font-weight:bold">Thêm Bài Viết</p>
+            </a>
+        </div>
+    }
+    <div class="container">
+        <div class="row">
+
+            <!--Start blog 3 single item-->
+            @foreach (var item in Model)
+            {
+                var count = db.E_Blog_Reply.Where(r => r.IsActive == true && r.BlogId == item.Id).Count();
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div class="blog-v3-items text-center">
+                        <div class="blog-v3-single-item">
+                            <img src="~/Content/HTLegal/img/blog/@item.Picture_810x305" alt="">
+                        </div>
+                        <div class="blog-v3-content-box">
+                            <div class="blog-v3-border">
+                                <div class="single-bolg-title blog-title-v3">
+                                    <h3>@item.Title</h3>
+                                    <div class="post-resource">
+                                        <ul>
+                                            <li class="authors"><a href="">By:<span>@item.CreatedBy</span></a></li>
+                                            @*<li class="tags"><a href="">Attorney Law</a></li>*@
+                                            <li class="comments"><a href="">Comments: @count</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="single-blog-text blog-3-text">
+                                    <p>@item.Description</p>
+                                    <div class="single-blog-read-more">
+                                        <a href="/blog/detail/@item.Id">Chi Tiết <i class="fa fa-long-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fix blog-post-date bolg-v3-date">
+                                <h1><b>@item.CreatedAt.Value.ToString("dd")</b> <br> @item.CreatedAt.Value.ToString("MMM")</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <!--End blog 3 single item-->
+        </div>
+        <!--paged link-->
+        @Html.Partial("_PagingPartialBlog", new ViewDataDictionary { { "page", page }, { "rpp", rpp }, { "totalRecords", totalRecords }, { "url", "/blog/index/" } })
+        <!--end paged link-->
+    </div>
+</section>
+

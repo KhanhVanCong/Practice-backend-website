@@ -1,0 +1,102 @@
+﻿@using HTLegal.Models
+@model E_CMS_Attorney
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var p = ViewBag.p;
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <b>Thông tin chung</b>
+        </li>
+    </ul>
+</div>
+<div class="box-content alerts">
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["success"]
+        </div>
+    }
+    else if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["error"]
+        </div>
+    }
+
+</div>
+
+<!-- danh sach -->
+<div class="box span4">
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2>Thiết lập thông tin sử dụng</h2>
+        </div>
+        <div class="box-content">
+            <form action="/admin/attorney/UpdateContent/" method="post" role="form" class="form-horizontal" enctype="multipart/form-data">
+                @Html.HiddenFor(w => w.Id)
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Banner</label>
+                    <div class="col-xs-4">
+                        <img src="~/Content/HtLegal/img/@Model.Logo_1920x400" alt="No Image" width="330" height="200" />
+                        <br /><p class="center">Kích thước: 1920x400</p>
+                        <p class="center">
+                            <a href="#" id="btchangepicture" onclick="UploadImg()" class="btn btn-mini">Chọn Hình</a>&nbsp&nbsp<span id="nameImg"></span>&nbsp&nbsp<a href="/admin/attorney/DeleteLogo/@Model.Id" class="btn btn-mini">Delete</a>
+                        </p>
+                        <input type="file" id="picture" name="picture" style="display:none" />
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề chính </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Title, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề phụ </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.SubTitle, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Nội dung </label>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(w => w.Content, new { @class = "form-control", @style = "height: 200px" })
+                    </div>
+                </div>
+                @if(p["attorney_update_content"] == true)
+                {
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label"> </label>
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function UploadImg() {
+            $("#picture").trigger('click');
+            $('#picture').change(function ()
+            {
+                var fileName = $('#picture').val().split('\\').pop();
+                $('#nameImg').html(fileName);
+            })
+        };
+    </script>
+}

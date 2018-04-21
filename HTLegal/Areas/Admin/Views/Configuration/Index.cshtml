@@ -1,0 +1,154 @@
+﻿@using HTLegal.Models
+@model E_WebsiteConfiguration
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var p = ViewBag.p;
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <b>Thành viên</b>
+        </li>
+    </ul>
+</div>
+<div class="box-content alerts">
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["success"]
+        </div>
+    }
+    else if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["error"]
+        </div>
+    }
+
+</div>
+
+<!-- danh sach -->
+<div class="box span4">
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2>Thiết lập thông tin sử dụng</h2>
+        </div>
+        <div class="box-content">
+            <form action="/admin/configuration/Save/" method="post" role="form" class="form-horizontal">
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Email Admin </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.EmailAdmin, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Support Email </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.SupportEmail, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Password Email </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.SupportEmailPassword, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Địa chỉ </label>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(w => w.AddressCompany, new { @class = "form-control", @style = "height: auto" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Điện thoại </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Phone, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Email Công ty </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.EmailCompany, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Website </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Website, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Mô tả </label>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(w => w.AboutUs, new { @class = "form-control", @style = "height: 130px" })
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Thông tin bản quyền </label>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(w => w.CopyRight, new { @class = "form-control", @style = "height: auto" })
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">FaceBook </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.FaceBook, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">LinkedIn </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.LinkedIn, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">GooglePlus </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.GooglePlus, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Twitter </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Twitter, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Khẩu Hiệu </label>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(w => w.LegalProblemContext, new { @class = "form-control", @style = "height: auto" })
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">SEO (Meta Description) </label>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(w => w.MetaDescription, new { @class = "form-control", @style = "height: auto" })
+                    </div>
+                </div>
+                @if (p["info_update"] == true)
+                {
+                    <div class="form-group form-group-sm">
+                        <label class="col-sm-2 control-label"> </label>
+                        <div class="col-xs-4">
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                }
+            </form>
+        </div>
+    </div>
+</div>

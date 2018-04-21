@@ -1,0 +1,226 @@
+﻿@model HTLegal.Models.E_Users
+@using HTLegal.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    Dictionary<string, bool> p = ViewBag.p;
+}
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <b>Thành viên</b>
+        </li>
+    </ul>
+</div>
+
+@if (p["user_Add"])
+{
+    <a class="btn btn-primary btn-sm" href="/admin/users/?id=0">Thêm mới thành viên</a>    
+}
+
+
+<div class="box-content alerts">
+    @if (TempData["err"] != null)
+    {
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Thất bại!</strong> @TempData["err"]
+        </div>
+    }
+    else if (TempData["succ"] != null)
+    {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Thành công!</strong> @TempData["succ"]
+        </div>
+    }
+
+</div>
+
+
+<div class="row">
+
+    <!-- create/update form -->
+    <div class="box col-md-8" @if (ViewBag.id == null)
+                              {
+                                  @Html.Raw(@"style=""display:none""")
+                              }>
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="" style="background-color: #ff6a00">
+                <h2><i class="glyphicon glyphicon-edit"></i>@if (ViewBag.id == 0)
+                                                            {<span>Thêm mới thành viên</span> }
+                                                            else
+                                                            {<span>Cập nhật thành viên</span>}</h2>
+            </div>
+            <div class="box-content">
+
+                <form action="/admin/users/SaveChanges/" method="post" role="form">
+                    @Html.HiddenFor(m => m.Id)
+                    <div class="form-group col-md-6">
+                        <label>Tên <span style="color:red">*</span></label>
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Họ <span style="color:red">*</span></label>
+                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Email <span style="color:red">*</span></label>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Điện thoại</label>
+                        @Html.TextBoxFor(m => m.CellPhone, new { @class = "form-control" })
+                    </div>
+                    
+                    <div class="form-group col-md-12">
+                        <label>Địa chỉ</label>
+                        @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Gender</label>
+                        <select name="Gender" class="form-control">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Ngày sinh</label>
+                        @Html.TextBoxFor(m => m.Birthday, new { @class = "form-control datepicker" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Quyền hạn</label>
+                        @Html.DropDownListFor(m => m.RolesId, ViewBag.roles as SelectList, new { @class = "form-control" })
+                    </div>
+
+
+                    <div class="control-group col-md-6">
+                        <label>Hoạt động</label>
+                        @Html.CheckBox("IsActive", Model.IsActive ?? false, new { @class = "form-control", style = "height:30px;width:30px" })
+                    </div>
+
+                    <div class="form-group col-md-12 text-right">
+                        <a class="btn btn-default btn-sm" href="/admin/users/">Cancel</a>&nbsp;
+                        <button class="btn btn-primary btn-sm" type="submit" onclick="submitform()">Submit</button>
+                    </div>
+                    <div class="clearfix"></div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- danh sach -->
+    <div class="box col-md-12">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2>Danh sách thành viên</h2>
+            </div>
+            <div class="box-content">
+                <div class="control-group">
+
+                    @{
+                        List<E_Users> users = ViewBag.usersList;
+                        
+                    }
+
+                   <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+                            <thead>
+                                <tr>
+                                    <th>Tên</th>
+                                    <th>Thông tin</th>
+                                    <th>Vai trò/quyền truy cập</th>
+                                    <th>Status</th>
+                                    @if(p["user_update"] == true || p["user_delete"] == true)
+                                    {
+                                    <th>Tác vụ</th>
+                                    }
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                               @foreach (var item in users)
+                               {
+                                   <tr>
+                                    <td>
+                                        @item.FullName
+                                        @if (item.RegisterAt != null)
+                                        {
+                                            <br /><b style="color:grey">Ngày đăng ký:</b>@item.RegisterAt.Value.ToString("dd/MM/yyyy")    
+                                        }
+                                        
+
+                                    </td>
+                                    <td>
+                                        <b style="color:grey">Địa chỉ:</b>@item.Address
+                                        <br /><b style="color:grey">Email:</b>@item.Email
+                                        <br /><b style="color:grey">Phone:</b>@item.CellPhone
+                                        <br /><b style="color:grey">Giới tính:</b>@item.Gender
+                                    </td>
+                                    <td>
+                                        @item.RolesName
+                                    </td>
+                                    <td>
+                                        @if (item.IsActive == true)
+                                        {
+                                            <span class="label-success label">Active</span>
+                                        }
+                                        else if(item.BannedAt != null)
+                                        {
+                                            <span class="label-warning label">Banned</span> <br />
+                                            <span>Bởi @item.BannedBy lúc @item.BannedAt.Value.ToString("dd/MM/yyyy hh:mm tt")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label-default label">In-Active</span>
+                                        }
+                                        @if (item.RegisterAt != null)
+                                        {
+                                             <br />
+                                            <span>Đăng ký lúc: @item.RegisterAt.Value.ToString("dd/MM/yyyy hh:mm tt")</span>
+                                        }
+                                       
+                                    </td>
+                                    @if (p["user_update"] == true || p["user_delete"] == true)
+                                        {
+                                    <td style="width:150px">
+                                        @if (p["user_update"])
+                                        {
+                                            <a class="btn btn-info  btn-xs" href="/admin/users/index/@item.Id">
+                                            <i class="glyphicon glyphicon-edit icon-white"></i>
+                                            Edit
+                                        </a>    
+                                        }
+                                        @if(p["user_delete"])
+                                        {
+                                        <a class="btn btn-danger btn-xs" href="/admin/users/delete/@item.Id" onclick="return confirm('Bạn muốn xóa?')">
+                                            <i class="glyphicon glyphicon-trash icon-white"></i>
+                                            Delete
+                                        </a>    
+                                        }                                       
+                                    </td>
+                                       }
+                                </tr>
+                               }
+                                
+                         
+                            </tbody>
+                        </table>
+                    
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,74 @@
+﻿@using HTLegal.Models
+
+@{
+    var roleInfo = ViewBag.rolesInfo as E_Roles;
+
+    var accessPage = ViewBag.accessPages as List<E_AccessPage>;
+    var p = ViewBag.p;
+    var currRoleID = ViewBag.CurrRole;
+}
+
+@using (Html.BeginForm("save", "accessmanagement", FormMethod.Post))
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">Grant access to @roleInfo.Name</div>
+        <div class="panel-body">
+
+            <div class="row">
+                <input type="hidden" name="hd_role_id" value="@roleInfo.Id" />
+                <input type="hidden" name="hd_role_name" value="@roleInfo.Name" />
+
+                @foreach (var item in accessPage)
+                {
+
+                    int accessExist = item.E_AccessFunctionInPage.Where(f => f.E_AccessFunctionRole.Any(r => r.Access == true && r.RoleId == roleInfo.Id)).Count();
+                    <div class="col-sm-6 col-md-4">
+                        <div class="thumbnail" style="height:503px;">
+                            <div class="caption">
+                                <h5><input @if (accessExist > 0) {@Html.Raw(@"checked=""checked""") } type="checkbox" value="true" name="chk-all-@item.PageCode" id="chk-all-@item.PageCode" onclick="checkAccess('@item.PageCode')" /> <label for="chk-all-@item.PageCode"> @item.PageName</label>  </h5>
+
+                                <div class="well" id="well-@item.PageCode" @if (accessExist > 0) { @Html.Raw(@"style=""background-color:lightskyblue;height:410px""")    }>
+                                    @foreach (var itemFunc in item.E_AccessFunctionInPage.ToList())
+                                    {
+                                        bool access = itemFunc.E_AccessFunctionRole.Any(a => a.Access == true && a.RoleId == roleInfo.Id);
+                                        <p>
+                                            <input @if (access) {@Html.Raw(@"checked=""checked""") } type="checkbox" value="true" name="chk-func-@itemFunc.FunctionCode" id="chk-func-@itemFunc.FunctionCode" />
+                                            <label for="chk-func-@itemFunc.FunctionCode"> @itemFunc.FunctionName</label>
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    
+    <div class="clearfix"></div>
+    if (p["system_update"] == true || currRoleID == 2)
+    {
+    <div class="text-right">
+        <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+    </div>
+    }
+
+}
+
+<script type="text/javascript">
+    function checkAccess(pagecode) {
+        $("#well-" + pagecode).find("input[type=checkbox]").each(function () {
+            //alert($(this).attr("id"));
+            var checked = $("#chk-all-" + pagecode).prop("checked");
+            $(this).prop("checked", checked);
+            if (checked) {
+                $("#well-" + pagecode).attr("style", "background-color:lightskyblue");
+            }
+            else {
+                $("#well-" + pagecode).removeAttr("style");
+            }
+
+        });
+    }
+</script>

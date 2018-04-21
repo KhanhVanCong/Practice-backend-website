@@ -1,0 +1,178 @@
+﻿@using HTLegal.Models
+@model IEnumerable<E_Blog>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    HTLegalContext db = new HTLegalContext();
+    HTLegal.Models.E_Users curMem = HTLegal.ViewController.EAuthority.GetCurrentMember();
+    int totalRecords = int.Parse(TempData["totalRecords"].ToString());
+    int page = int.Parse(TempData["page"].ToString());
+    int rpp = int.Parse(TempData["rpp"].ToString());
+    var p = ViewBag.p;
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <b>Blog</b>
+        </li>
+    </ul>
+</div>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["success"]
+    </div>
+}
+else if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["error"]
+    </div>
+}
+<!--Search-->
+
+<div class="row">
+    <div class="box col-md-12">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2><i class="glyphicon glyphicon-search"></i> Search</h2>
+            </div>
+            <div class="box-content">
+                <form action="/admin/blog/blog/" method="get" class="form-horizontal">
+                    <div class="form-group form-group-sm">
+                        <label class="col-sm-2 control-label">Tìm kiếm </label>
+                        <div class="col-xs-4">
+                            <input type="text" class="form-control" name="searchInfo" value="@ViewBag.Search" placeholder="Tiêu Đề, Người Tạo" />
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-sm-2 control-label"> </label>
+                        <div class="col-xs-6">
+                            <button class="btn btn-primary btn-sm" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- danh sach -->
+<div class="row">
+    <div class="box col-md-12">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2>Thông tin Banner</h2>
+            </div>
+            <div class="box-content">
+                <div style="margin-bottom:10px">
+                    <select id="recordsperpage" style="width: 80px" onchange="changeRecordsPerPage('/admin/blog/blog?page=1&rpp=')">
+                        <option value="15" @if (rpp == 15) { @Html.Raw(@"selected=""selected""")      }>15</option>
+                        <option value="25" @if (rpp == 25) { @Html.Raw(@"selected=""selected""")      }>25</option>
+                        <option value="50" @if (rpp == 50) { @Html.Raw(@"selected=""selected""")      }>50</option>
+                        <option value="100" @if (rpp == 100) { @Html.Raw(@"selected=""selected""")      }>100</option>
+                    </select>
+                    records per page
+                </div>
+                <div class="control-group">
+                    <table class="table table-striped table-bordered bootstrap-datatable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ảnh đại diện</th>
+                                <th>Tiêu đề</th>
+                                <th>Phản Hồi</th>
+                                <th>Trạng Thái</th>
+                                @if (p["blog_update"] == true || p["blog_delete"] == true)
+                                {
+                                    <th> </th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                var comment = db.E_Blog_Reply.Where(r => r.BlogId == item.Id).ToList();
+                                <tr>
+                                    <td>
+                                        @item.Id
+
+                                    </td>
+                                    <td>
+                                        <img src="~/Content/HTLegal/img/blog/@item.Picture_810x305" alt="No Image" width="150" height="56">
+                                    </td>
+                                    <td style="width:300px">
+                                        @item.Title
+                                        <br />
+                                        <b style="color:grey">Tạo lúc: @item.CreatedAt.Value.ToString("dd/MM/yyyy HH:mm tt")</b>
+                                        <br />
+                                        <b style="color:grey">Tạo bởi: @item.CreatedBy</b>
+                                    </td>
+                                    <td>
+                                        <b>Tổng lượt bình luận: @comment.Count()</b>
+                                        @if (comment.Count > 0)
+                                        {
+                                            <p>Phản hồi lần cuối bởi @comment.LastOrDefault().CreatedBy vào lúc @comment.LastOrDefault().CreatedAt.Value.ToString("dd/MM/yyyy HH:mm tt")</p>
+                                        }
+                                    </td>
+                                    <td style="width:200px">
+                                        @if (item.IsActive == true)
+                                        {
+                                            <span class="label-success label">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label-default label">InActive</span> <br />
+                                            <span>Bởi @item.DisabledBy lúc @item.DisabledAt.Value.ToString("dd/MM/yyyy hh:mm tt")</span>
+                                        }
+                                    </td>
+                                    @if (p["blog_update"] == true || p["blog_delete"] == true)
+                                    {
+                                        <td style="width:140px;">
+                                            @if(p["blog_update"] == true)
+                                            {
+                                            <a class="btn btn-info  btn-xs" href="/admin/blog/createblog/@item.Id">
+                                                <i class="glyphicon glyphicon-edit icon-white"></i>
+                                                Edit
+                                            </a>
+                                            }
+                                            @if(p["blog_delete"] == true) { 
+                                            <a class="btn btn-danger btn-xs" href="/admin/blog/DeleteBlog/@item.Id?fullname=@curMem.FullName" onclick="return confirm('Bạn muốn xóa?')">
+                                                <i class="glyphicon glyphicon-trash icon-white"></i>
+                                                Delete
+                                            </a>
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <!--paged link-->
+                    @Html.Partial("_PagingPartial", new ViewDataDictionary { { "page", page }, { "rpp", rpp }, { "totalRecords", totalRecords }, { "url", "/admin/blog/blog" } })
+                    <!--end paged link-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        function changeRecordsPerPage(url) {
+            var rpp = $("#recordsperpage").val();
+            window.location = url + rpp;
+        }
+    </script>
+}
+
+

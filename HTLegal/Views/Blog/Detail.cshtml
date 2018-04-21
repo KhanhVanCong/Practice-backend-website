@@ -1,0 +1,258 @@
+﻿@using HTLegal.Models
+@model E_Blog
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    HTLegalContext db = new HTLegalContext();
+    var banner = db.E_CMS_Blog.FirstOrDefault();
+    var blog = db.E_Blog.Where(b => b.IsActive == true).OrderByDescending(b => b.CreatedAt).Take(4).ToList();
+    var services = db.E_Services.ToList();
+    var staff = db.E_CMS_ConTactUs.FirstOrDefault();
+    var comment = db.E_Blog_Reply.Where(r => r.IsActive == true && r.BlogId == Model.Id).OrderBy(r => r.CreatedAt).ToList();
+    var count = comment.Count();
+    HTLegal.Models.E_Users curMem = HTLegal.ViewController.EAuthority.GetCurrentMember();
+    var p = ViewBag.p;
+}
+
+
+<!--Start Breadcrumb Text area-->
+<section class="breadcrumb-area" style="background: rgba(0, 0, 0, 0) url('/Content/HTLegal/img/@banner.Logo_1920x400') no-repeat; background-position: center; background-size:cover; position: relative;">
+    <div class="breadcrumb-text-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="breadcrumb-text text-center">
+                        <h1>Blog</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Breadcrumb Text area-->
+
+<!--Start blog details area-->
+<section id="blog-details-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                <div class="blog-items blog-details-part">
+                    <!--Start blog details-->
+                    <div class="blog-details">
+                        <img src="~/Content/HTLegal/img/blog/@Model.Picture_810x305" alt="">
+                        <div class="fix blog-post-date">
+                            <h1><b>@Model.CreatedAt.Value.ToString("dd")</b> <br> @Model.CreatedAt.Value.ToString("MMM")</h1>
+                            
+                        </div>
+                        <div class="single-bolg-title">
+                            <h3>@Model.Title</h3>
+                            <div class="post-resource">
+                                <ul>
+                                    <li class="authors"><a href="">By:<span>@Model.CreatedBy</span></a></li>
+                                    @*<li class="tags"><a href="">Attorney Law</a></li>*@
+                                    <li class="comments"><a href="">Comments: @count</a></li>
+                                    @if(curMem != null && curMem.FullName == Model.CreatedBy)
+                                    {
+                                        if(p["blog_update"] == true)
+                                        { 
+                                        <li class="edit"><a href="/blog/createblog/@Model.Id">Chỉnh sửa</a></li>
+                                        }
+                                        if(p["blog_delete"] == true)
+                                        { 
+                                        <li class="delete"><a href="/blog/DeleteBlog/@Model.Id?fullname=@curMem.FullName" onclick="return confirm('Bạn có chắc muốn xóa bài viết này không ?')">Xóa</a></li>
+                                        }
+                                    }
+
+                                </ul>
+                            </div>
+                        </div>
+                        <!--Start blog details top text-->
+                        <div class="blog-details-top-text">
+                            @Html.Raw(Model.Content)
+                        </div>
+                        <!--End blog details top text-->
+                        <!--Start comment part -->
+                        <div class="comment-part">
+                            <div class="comment-title">
+                                <h4><span>Hiện đang có @count bình luận về bài viết "@Model.Title"</span></h4>
+                            </div>
+                            @foreach (var item in comment)
+                            {
+                            <!--Start comment box-->
+                                <div class="comment-box">
+                                    <!--Start single comment box-->
+                                    <div class="single-comment-box">
+                                        <div class="comment-textcomment-holder">
+                                            <p>&nbsp;</p>
+                                        </div>
+                                        <div class="comment-text">
+                                            @if(p["blog_lockcomment"] == true)
+                                            { 
+                                            <h5>@item.CreatedBy-<span>@item.CreatedAt.Value.ToString("dd") @item.CreatedAt.Value.ToString("MMM")  @if (curMem != null && curMem.FullName == Model.CreatedBy) { <a href="/blog/LockComment/@item.Id?fullname=@curMem.FullName" class="btn btn-info btn-xs" style="color:white; font-size:10px" onclick="return confirm('Bạn có chắc muốn khóa Bình Luận này không ?')">Khóa</a>}</span></h5>
+                                            }
+                                            <p>@item.Content</p>
+                                            <a href="#" onclick="Comment(); return false;">Reply</a>
+                                        </div>
+                                    </div>
+                                    <!--End single comment box-->
+                                </div>
+                            <!--End comment box-->
+                            }
+                        </div>
+                        <!--End comment part -->                        
+                        <!--Start meet attorney form-->
+                        <div class="meet-attorneys" id="reply">
+                            <div class="comment-title">
+                                <h4><span>Bình Luận</span></h4>
+                            </div>
+                            <div class="comment-form">
+                                <form action="/blog/SubmitComment" method="post" role="form">
+                                    @Html.HiddenFor( r => r.Id)
+                                    @if (curMem == null)
+                                    {
+                                    <input id="name_comment" name="name" class="name" type="text" placeholder="Họ Tên (*)">
+                                    <input class="phone" name="phone" type="text" placeholder="Phone ">
+                                    <input id="email_comment" class="email" name="email" type="text" placeholder="E-mail (*)">
+                                    <textarea id="content_comment" class="comment" name="comment" placeholder="Bình Luận (*)"></textarea>
+                                    <button id="submit" type="submit">Gửi Bình Luận<i class="fa fa-arrow-right"></i></button>
+                                    }
+                                    else
+                                    {
+                                        <input name="name" type="hidden" value="@curMem.FullName">                                       
+                                        <input name="email" type="hidden" value="@curMem.Email">
+                                        <textarea id="content_comment" class="comment" name="comment" placeholder="Bình Luận (*)"></textarea>
+                                        <button type="submit">Gửi Bình Luận<i class="fa fa-arrow-right"></i></button>
+                                    }
+                                </form>
+                            </div>
+                        </div>
+                        <!--End meet attorney form-->
+                    </div>
+                    <!--End blog details-->
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <!--Start Left sidebar widget-->
+                <div class="left-sidebar">
+                    <div class="left-sidebar-items">
+                        <!--Start left sidebar single item-->
+                        <div class="left-sidebar-single-item">
+                            <div class="sidebar-widget-title">
+                                <h3><span>Bài Viết Khác </span></h3>
+                            </div>
+                            <div class="practice-widget-items">
+                                    @foreach (var item in blog)
+                                    {
+                                        if(item.Id != Model.Id)
+                                        {
+                                        <!--Start Practice widget single-item-->
+                                <div class="fix practice-widget-single-item">
+                                    <div class="fix widget-lawyer-image">
+                                        <img src="~/Content/HTLegal/img/blog/@item.Picture_810x305" alt="">
+                                    </div>
+                                    <div class="fix widget-lawyer-name">
+                                        <h4>@item.Title </h4>
+                                        <p><a href="/blog/detail/@item.Id" >Chi Tiết <i class="fa fa-long-arrow-right"></i></a></p>
+                                    </div>
+                                </div>
+                                         <!--End Practice widget single-item-->
+                                        }
+                                    }                                
+
+                            </div>
+                            <div class="fix practice-widget-single-item">
+                                <a href="/blog/index">Xem Thêm Các Bài Viết Khác</a>
+                            </div>
+                        </div>
+                        <!--End left sidebar single item-->
+                        <!--Start left sidebar single item-->
+                        <div class="left-sidebar-single-item">
+                            <div class="sidebar-widget-title">
+                                <h3><span>Dịch Vụ</span></h3>
+                            </div>
+                            <div class="sidebar-widget-category">
+                                <ul>
+                                    @foreach(var item in services)
+                                    {
+                                    <li><a href="/services/detail/@item.Id" target="_blank">@item.Title</a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <!--End left sidebar single item-->
+                        <!--Start left sidebar single item-->
+                        <div class="left-sidebar-single-item">
+                            <div class="sidebar-widget-title">
+                                <h3><span>Liên Hệ Với Chúng Tôi</span></h3>
+                            </div>
+                            @*<div class="sidebar-meet-attorneys">
+                                    <img src="img/meet-attorney.jpg" alt="">
+                                    <div class="meet-attorney-name">
+                                        <h4>@staff.FullName</h4>
+                                    </div>
+                                </div>*@
+                            <div class="contact-right text-center">
+                                <div class="contact-right-img">
+                                    <img src="~/Content/HTLegal/img/@staff.Picture_141x141" alt="" width="141" height="141">
+                                </div>
+                                <div class="contact-right-text">
+                                    <h3>@staff.FullName</h3>
+                                    <h5>@staff.Position</h5>
+                                    <p>Phone : @staff.Phone</p>
+                                    <p>Email : @staff.Email</p>
+                                </div>
+                                <div class="contact-right-social-link">
+                                    <a href="@staff.Facebook" target="_blank"><i class="fa fa-facebook mysocial_style"></i></a>
+                                    <a href="@staff.Twifter" target="_blank"><i class="fa fa-twitter mysocial_style"></i></a>
+                                    <a href="@staff.Google" target="_blank"><i class="fa fa-google-plus mysocial_style"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--End left sidebar single item-->
+                    </div>
+                </div>
+                <!--End Left sidebar widget-->
+            </div>
+        </div>
+    </div>
+</section>
+<!--End blog details area-->
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        function Comment()
+        {
+            window.location = '#reply';
+            $('#name_comment').focus();
+
+        }
+
+        $('#submit').click(function () {
+            var name = $.trim($('#name_comment').val());
+            var email = $.trim($('#email_comment').val());
+            var content = $.trim($('#content_comment').val());         
+            if (name === "" && email === "" && content === "") {
+                alert('Quý khách vui lòng nhập đầy đủ các thông tin (*) !');
+                return false;
+            }
+            else {
+                if (email === "") {
+                    alert('Quý Khách vui lòng nhập lại Email !');
+                    return false;
+                }
+                if (name === "") {
+                    alert('Quý Khách vui lòng nhập Họ Tên !');
+                    return false;
+                }
+                if (content === "") {
+                    alert('Quý Khách vui lòng nhập Nội Dung Bình Luận !');
+                    return false;
+                }
+            }
+        });
+     
+    </script>
+}

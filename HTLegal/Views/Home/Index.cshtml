@@ -1,0 +1,402 @@
+﻿@using HTLegal.Models
+@model IEnumerable<object>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<E_Home_Content> homeInfo = Model.ToList()[0] as List<E_Home_Content>;
+    var homeContent = homeInfo.FirstOrDefault();
+    List<E_Home_Slide> homeSlide = Model.ToList()[1] as List<E_Home_Slide>;
+    List<E_Services> services = Model.ToList()[2] as List<E_Services>;
+    List<E_Feature_Services> featureServices = Model.ToList()[3] as List<E_Feature_Services>;
+    //List<E_Client> client = Model.ToList()[4] as List<E_Client>;
+    List<E_Attorneys> attorney = Model.ToList()[4] as List<E_Attorneys>;
+    List<E_Blog> blog = Model.ToList()[5] as List<E_Blog>;
+    List<E_Home_FeedbackClient> feedback = Model.ToList()[6] as List<E_Home_FeedbackClient>;
+    HTLegalContext db = new HTLegalContext();
+
+}
+
+<!-- #banner -->
+<section id="banner">
+    <div class="banner-container">
+        <div class="banner home-v1">
+            <ul>
+                @foreach (var item in homeSlide)
+                {
+                    <li class="slider-1"
+                        data-transition="fade"
+                        data-slotamount="7">
+
+                        <img src="~/Content/HTLegal/img/slider/@item.Logo_1920x940_Slide"
+                             data-bgrepeat="no-repeat"
+                             data-bgfit="cover"
+                             data-bgposition="center center"
+                             alt="slider image">
+
+                        <div class="caption sfl sfb tp-resizeme caption-bold-heading text-center"
+                             data-x="0"
+                             data-y="480"
+                             data-speed="700"
+                             data-start="1700"
+                             data-easing="easeOutBack">
+                            <h1>@item.Title_Slide</h1>
+                        </div>
+
+                        <div class="caption sfr sfb tp-resizeme p-tag text-center"
+                             data-x="0"
+                             data-y="570"
+                             data-speed="700"
+                             data-start="2000"
+                             data-easing="easeOutBack">
+                            <p>@item.SubTitle_Slide</p>
+                        </div>
+                        <div class="caption sft tp-resizeme thm-btn text-center"
+                             data-x="0"
+                             data-y="660"
+                             data-speed="700"
+                             data-start="2800"
+                             data-easing="easeOutBack">
+                            <a href="#">View Services <i class="fa fa-arrow-right"></i></a>
+                        </div>
+
+                    </li>
+                }
+
+
+            </ul>
+        </div>
+    </div>
+</section>
+<!-- /#banner -->
+
+<section class="call-to-action-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dtc icon-box">
+                    <i class="icon icon-Phone2"></i>
+                </div>
+                <div class="dtc text-one">
+                    <h3>@*Get Free Legal Consultatnt:*@@homeContent.Info_1 @*<span class="number">1800 245 6354</span>*@</h3>
+                </div>
+                <div class="dtc text-two">
+                    <h4>@*7 days a Week From : 8.00 am to 2.30 pm*@@homeContent.Info_2</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Start welcome area-->
+<section id="welcome-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div class="welcome-attorney">
+                    <div class="section-title">
+                        <h1><span>@homeContent.Welcome</span></h1>
+                    </div>
+                    <div class="welcome-text">
+                        <p>
+                            @*Lorem ipsum dolor sit amet, cons ectetur elit. Vestibulum nec odios Suspe ndisse cursus mal suada faci lisis. Lorem ipsum dolor sit ametion consectetur elit. Vesti bulum nec odio ipsum.*@
+                            @homeContent.Description
+                        </p>
+                    </div>
+                    @*<div class="fix civil-titigation">
+                            <div class="fix civil-img-holder alignleft">
+                                <img src="img/civil.jpg" alt="">
+                            </div>
+                            <div class="fix civil-text">
+                                <h4>civil litigation</h4>
+                                <p>Lorem ipsum dolor sit amet, cons ectetur elit. Vesti bulum nec odios Suspe ndisse cursus.</p>
+                                <a href="">read more</a>
+                            </div>
+                        </div>*@
+                </div>
+            </div>
+            @for (var item = 0; item < services.Count; item++)
+            {
+                if (item == 0 || item == 1)
+                {
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="our-law">
+                            <img src="~/Content/htlegal/img/practice/@services[item].Image_374x219">
+                            <h4>@services[item].Title</h4>
+                            <p>@services[item].Description</p>
+                            <a href="/services/detail/@services[item].Id" target="_blank">read more</a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+<!--End welcome area-->
+<!--Start Featured Services area-->
+@Html.Partial("~/Views/Shared/_ServicesPartial.cshtml")
+<!--End Featured Services area-->
+<!--Start Case Evaluation area-->
+<section id="case-evaluation-area" class="anim-5-all">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
+                <div class="case-evaluation-form">
+                    <div class="case-evaluation-form-title">
+                        <h1>@homeContent.Title_Form_Submit</h1>
+                    </div>
+                    <form action="/home/submit" method="post" role="form" target="_blank">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="text" placeholder="Tên" name="FirstName">
+                            </div>
+                            <div class="col-lg-6">
+                                <input type="text" placeholder="Họ" name="LastName">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="text" placeholder="E-mail" name="Email" id="email">
+                            </div>
+                            <div class="col-lg-6">
+                                <input type="text" placeholder="Phone" name="Phone" id="phone">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <textarea placeholder="Chúng tôi có thể giúp gì cho bạn ?" name="Message"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" id="submit">submit now</button>
+                    </form>
+
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                <div class="case-evaluation-image clearfix">
+                    <img src="~/Content/htlegal/img/@homeContent.Image_875x510_RightSubmit" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Case Evaluation area-->
+<!--Start Our Attorneys Area-->
+<section id="our-attorneys-area" class="anim-5-all home">
+    <div class="container">
+        <div class="row">
+            <div class="our-attorneys">
+                <div class="section-title text-center">
+                    <h2><span>@homeContent.Title_Attorney_Area</span></h2>
+                </div>
+                <!--Start Single Attorney-->
+                @foreach (var item in attorney)
+                {
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="single-attorney">
+                            <div class="attorney-image-holder">
+                                <img src="~/Content/HTLegal/img/attorneys/@item.Picture_270x288">
+                                <div class="attorney-overlay">
+                                    <div class="social-links">
+                                        <a href="@item.Facebook" target="_blank"><i class="fa fa-facebook mysocial_style"></i></a>
+                                        <a href="@item.Twifter" target="_blank"><i class="fa fa-twitter mysocial_style"></i></a>
+                                        <a href="@item.Google" target="_blank"><i class="fa fa-google-plus mysocial_style"></i></a>
+                                    </div>
+                                    <div class="attorney-ninus-icon">
+                                        <img src="~/Content/HTLegal/img/attorney-ninus-icon.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="attorney-plus-icon">
+                                    <img src="~/Content/HTLegal/img/attorney-plus-icon-golden.png" alt="">
+                                </div>
+                            </div>
+                            <div class="attorney-name text-center">
+                                <h5>@item.FullName</h5>
+                                <p>@item.Position</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <!--End Single Attorney-->
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Our Attorneys Area-->
+<!--Start Testimonial Area-->
+<section id="testimonial-area" style="background: rgba(0, 0, 0, 0) url('../content/htlegal/img/testimonial/@homeContent.Img_1920x329_Feedback') no-repeat scroll center bottom / cover ;
+  padding-bottom: 46px;
+  padding-top: 63px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12">
+                <div class="testimonial-list">
+                    <div id="testimonial-carousel" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner" role="listbox">
+                            @for(var i=0; i< feedback.Count; i++)
+                            {
+                            <!--Start Testimonial Single Item-->
+                                if(i == 0)
+                                { 
+                            <div class="item active">
+                                <div class="single-testimonial-item text-center">
+                                    <div class="testimonial-image-holder">
+                                        <img src="~/Content/HTLegal/img/testimonial/@feedback[0].Icon_108x108" width="108" height="108" alt="">
+                                    </div>
+                                    <p>@feedback[0].Content</p>
+
+                                    <div class="testimonial-author">
+                                        <h4>@feedback[0].Author</h4>
+                                    </div>
+                                </div>
+                            </div>
+                                }
+                                else
+                                {
+                                    <div class="item">
+                                        <div class="single-testimonial-item text-center">
+                                            <div class="testimonial-image-holder">
+                                                <img src="~/Content/HTLegal/img/testimonial/@feedback[i].Icon_108x108" width="108" height="108" alt="">
+                                            </div>
+                                            <p>@feedback[i].Content</p>
+
+                                            <div class="testimonial-author">
+                                                <h4>@feedback[i].Author</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            <!--End Testimonial Single Item-->
+                            }
+                            <a class="left testimonial-control" href="#testimonial-carousel" role="button" data-slide="prev"><i class="fa fa-long-arrow-left testimonial-ctl-button"></i></a>
+                            <a class="right testimonial-control" href="#testimonial-carousel" role="button" data-slide="next"><i class="fa fa-long-arrow-right testimonial-ctl-button"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Testimonial Area-->
+<!--Start latest news area-->
+<section id="latest-news-area" class="anim-5-all">
+    <div class="container">
+        <div class="row">
+            <div class="latest-news">
+                <div class="section-title text-center">
+                    <h2><span>@homeContent.Title_Blog_Area</span></h2>
+                </div>
+                @if (blog.Count <= 3)
+                {
+                    foreach (var item in blog)
+                {
+                    <!--Start Single news item-->
+                        var count = db.E_Blog_Reply.Where(r => r.IsActive == true && r.BlogId == item.Id).Count();
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <div class="single-news-item">
+                                <div class="news-image-holder">
+                                    <img src="~/Content/HTLegal/img/blog/@item.Picture_810x305" alt="">
+                                    <div class="overlay">
+                                        <a href="#"><i class="fa fa-link"></i></a>
+                                    </div>
+                                    <div class="published-date-wrapper">
+                                        <div class="published-date">
+                                            <h3>@item.CreatedAt.Value.ToString("dd")</h3>
+                                            <p>@item.CreatedAt.Value.ToString("MMM")</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="latest-news-text">
+                                    <ul class="meta text-center">
+                                        <li><a href="#"><i class="fa fa-user"></i> By: @item.CreatedBy</a></li>
+                                        <li><a href="#"><i class="fa fa-comments"></i> Comments: @count</a></li>
+                                    </ul>
+                                    <h4>@item.Title</h4>
+                                    <p>@item.Description</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+
+                    for (var i = 0; i < 3; i++)
+                    {
+                        int? id = blog[i].Id;
+                        var count = db.E_Blog_Reply.Where(r => r.IsActive == true && r.BlogId == id).Count();
+                     <!--Start Single news item-->
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <div class="single-news-item">
+                                <div class="news-image-holder">
+                                    <img src="~/Content/HTLegal/img/blog/@blog[i].Picture_810x305" alt="">
+                                    <div class="overlay">
+                                        <a href="/blog/detail/@blog[i].Id"><i class="fa fa-link"></i></a>
+                                    </div>
+                                    <div class="published-date-wrapper">
+                                        <div class="published-date">
+                                            <h3>@blog[i].CreatedAt.Value.ToString("dd")</h3>
+                                            <p>@blog[i].CreatedAt.Value.ToString("MMM")</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="latest-news-text">
+                                    <ul class="meta text-center">
+                                        <li><a href="#"><i class="fa fa-user"></i> By: @blog[i].CreatedBy</a></li>
+                                        <li><a href="#"><i class="fa fa-comments"></i> Comments: @count</a></li>
+                                    </ul>
+                                    <h4>@blog[i].Title</h4>
+                                    <p>@blog[i].Description</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                }
+                <!--End Single news item-->
+            </div>
+        </div>
+    </div>
+</section>
+<!--End latest news area-->
+<!-- #clients -->
+@*<section id="clients">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="owl-carousel owl-theme">
+                    @foreach (var item in client)
+                    {
+                        <div class="item">
+                            <a href="@item.Link" target="_blank"><img src="~/Content/HTLegal/img/clients/@item.Icon_143x98" alt=""></a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>*@
+<!-- /#clients -->
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $('#submit').click(function () {
+            var email = $.trim($('#email').val());
+            var phone = $.trim($('#phone').val());
+            if (email === "" && phone === "") {
+                alert('Quý khách vui lòng nhập email hoặc số điện thoại !');
+                return false;
+            }
+            else {
+                if ($.isNumeric(phone) == false && email === "") {
+                    alert('Quý Khách vui lòng nhập lại số điện thoại !');
+                    return false;
+                }
+            }
+
+        });
+
+
+    </script>
+}

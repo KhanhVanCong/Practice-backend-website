@@ -1,0 +1,123 @@
+﻿@using HTLegal.Models
+@model IEnumerable<E_Attorneys>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var p = ViewBag.p;
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            Luật sư
+        </li>
+    </ul>
+</div>
+
+@if (p["attorney_add"] == true)
+{
+    <a class="btn btn-primary btn-sm" href="/admin/attorney/Create">Thêm Luật sư mới</a>
+}
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["success"]
+    </div>
+}
+else if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["error"]
+    </div>
+}
+
+<!-- danh sach -->
+<div class="row">
+    <div class="box col-md-12">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2>Thông tin luật sư</h2>
+            </div>
+            <div class="box-content">
+                <div class="control-group">
+
+                    <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Họ Tên</th>
+                                <th>Chức vụ</th>
+                                <th>Lĩnh vực phụ trách</th>
+                                <th>Ảnh đại diện</th>
+                                <th>Nổi Bật</th>
+                                @if (p["attorney_update"] == true || p["attorney_delete"] == true)
+                                {
+                                    <th>Tác Vụ</th>
+                                }
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.UserId
+                                    </td>
+                                    <td>
+                                        @item.FullName
+                                    </td>
+                                    <td>
+                                        @item.Position
+                                    </td>
+                                    <td>
+                                        @item.PractiveAreas
+                                    </td>
+                                    <td>
+                                        <img src="~/Content/HTLegal/img/attorneys/@item.Picture_270x288" width="90" height="96" alt="Profiler Image">
+                                    </td>
+                                    <td>
+                                        @if (@item.IsActiceHome == true)
+                                        {
+                                            <span class="label-success label">Active Home</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label-default label">In-Active Home</span>
+                                        }
+                                    </td>
+                                    @if (p["attorney_update"] == true || p["attorney_delete"] == true)
+                                    {
+                                        <td>
+                                            @if(p["attorney_update"] == true)
+                                            { 
+                                            <a class="btn btn-info  btn-xs" href="/admin/attorney/create/@item.UserId">
+                                                <i class="glyphicon glyphicon-edit icon-white"></i>
+                                                Edit
+                                            </a>
+                                            }
+                                            @if(p["attorney_delete"] == true)
+                                            { 
+                                            <a class="btn btn-danger btn-xs" href="/admin/attorney/DeleteAttorney/@item.UserId" onclick="return confirm('Bạn muốn xóa?')">
+                                                <i class="glyphicon glyphicon-trash icon-white"></i>
+                                                Delete
+                                            </a>
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

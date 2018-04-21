@@ -1,0 +1,116 @@
+﻿@using HTLegal.Models
+@model E_Blog
+
+
+@{
+    ViewBag.Title = "CreateBlog";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    HTLegalContext db = new HTLegalContext();
+    var banner = db.E_CMS_Blog.FirstOrDefault();
+    HTLegal.Models.E_Users curMem = HTLegal.ViewController.EAuthority.GetCurrentMember();
+}
+
+<!--Start Breadcrumb Text area-->
+<section class="breadcrumb-area" style="background: rgba(0, 0, 0, 0) url('/Content/HTLegal/img/@banner.Logo_1920x400') no-repeat; background-position: center; background-size:cover; position: relative;">
+    <div class="breadcrumb-text-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="breadcrumb-text text-center">
+                        <h1>Blog</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Breadcrumb Text area-->
+
+
+<!--Start contact area-->
+<section id="contact-area" class="anim-5-all">
+    <div class="container">
+        <div class="row">
+            <div class="contact">
+                <div class="section-title text-center">
+                    <h2><span>@if (Model.Id == 0)
+                    { @Html.Raw("Tạo Bài Viết Mới")}
+                    else {@Html.Raw("Chỉnh Sửa Bài Viết") }</span></h2>
+                </div>
+               
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="contact-form">
+                        <form action="/blog/CreateBlog" method="post" role="form" class="thm-contact-form" enctype="multipart/form-data">
+                            @Html.HiddenFor(m => m.Id)
+                            <input type="hidden" name="fullname" value="@curMem.FullName" />
+                            @*<img src="~/Content/HTLegal/img/blog/blog_1.jpg" />*@
+                            <div class="col-xs-4" style="margin-left:35%">
+                                @if (Model.Id > 0)
+                                {
+                                    <img src="~/Content/HTLegal/img/blog/@Model.Picture_810x305" alt="No Image"  />
+                                }
+                                else
+                                {
+                                    <img src="~/Content/HTLegal/img/no-img.png" alt="No Image"  />
+                                }
+                                <br /><p style="text-align:center">Kích thước: 810x305</p>
+                                <p style="text-align:center">
+                                    <a href="#" id="btchangepicture" onclick="UploadImg()" class="btn btn-mini">Chọn Hình</a>&nbsp&nbsp<span id="nameImg"></span>&nbsp&nbsp
+                                    @if (Model.Id > 0)
+                                    {
+                                       <a href="/blog/DeletePicture?id=@Model.Id" class="btn btn-mini">Xóa</a>
+                                    }
+                                </p>
+                                <input type="file" id="picture" name="picture" style="display:none" />
+                            </div>
+                            <input id="title" name="title" type="text" placeholder="Tiêu Đề (*)" value="@Model.Title">
+                            <input id="mota" name="mota" type="text" placeholder="Mô tả (*)" value="@Model.Description">
+                            <textarea id="message" name="message" placeholder="Tin Nhắn (*)">@Model.Content</textarea>
+                            <button id="submit" type="submit" style="margin-top:15px;">Đăng Bài Viết <i class="fa fa-arrow-right"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End contact area--> 
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/Content/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="~/Content/ckfinder/ckfinder.js"></script>
+    <script>
+        CKEDITOR.replace('message');
+        CKFinder.setupCKEditor(null, '/Content/ckfinder');
+
+        function UploadImg() {
+            $("#picture").trigger('click');
+            $('#picture').change(function () {
+                var fileName = $('#picture').val().split('\\').pop();
+                $('#nameImg').html(fileName);
+            })
+        };
+
+        $('#submit').click(function () {
+            var title = $.trim($('#title').val());
+            var mota = $.trim($('#mota').val());
+            var content = $.trim($('#message').val());
+            if (title === "" && mota === "" ) {
+                alert('Quý khách vui lòng nhập đầy đủ các thông tin (*) !');
+                return false;
+            }
+            else {
+                if (title === "") {
+                    alert('Quý Khách vui lòng nhập Tiêu Đề !');
+                    return false;
+                }
+                if (mota === "") {
+                    alert('Quý Khách vui lòng nhập mô tả Bài Viết !');
+                    return false;
+                }
+                
+            }
+        });
+    </script>
+}

@@ -1,0 +1,119 @@
+﻿@using HTLegal.Models
+@model IEnumerable<E_Services>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var p = ViewBag.p;
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            Dịch Vụ
+        </li>
+    </ul>
+</div>
+
+@if (p["services_add_news"] == true)
+{
+    <a class="btn btn-primary btn-sm" href="/admin/services/CreateNew">Thêm dịch vụ mới</a>
+}
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["success"]
+    </div>
+}
+else if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["error"]
+    </div>
+}
+
+<!-- danh sach -->
+<div class="row">
+    <div class="box col-md-12">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2>Thông tin các dịch vụ</h2>
+            </div>
+            <div class="box-content">
+                <div class="control-group">
+                    <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tiêu đề</th>
+                                <th>Mô tả</th>
+                                <th>Ảnh đại diện</th>
+                                <th>Nổi Bật</th>
+                                @if (p["services_update_news"] == true || p["services_delete_news"] == true)
+                                {
+                                    <th>Tác Vụ</th>
+                                }
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Id
+                                    </td>
+                                    <td>
+                                        @item.Title
+                                    </td>
+                                    <td>
+                                        @item.Description
+                                    </td>
+
+                                    <td>
+                                        <img src="~/Content/HTLegal/img/practice/@item.Image_374x219" width="154" height="90" alt="No Img">
+                                    </td>
+                                    <td>
+                                        @if (@item.IsActiveHome == true)
+                                        {
+                                            <span class="label-success label">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label-default label">In-Active</span>
+                                        }
+                                    </td>
+                                    @if (p["services_update_news"] == true || p["services_delete_news"] == true)
+                                    {
+                                    <td>
+                                        @if(p["services_update_news"] == true)
+                                        { 
+                                        <a class="btn btn-info  btn-xs" href="/admin/services/createnew/@item.Id">
+                                            <i class="glyphicon glyphicon-edit icon-white"></i>
+                                            Edit
+                                        </a>
+                                        }
+                                        @if(p["services_delete_news"] == true)
+                                        { 
+                                        <a class="btn btn-danger btn-xs" href="/admin/services/DeleteNew/@item.Id" onclick="return confirm('Bạn muốn xóa?')">
+                                            <i class="glyphicon glyphicon-trash icon-white"></i>
+                                            Delete
+                                        </a>
+                                        }
+                                    </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

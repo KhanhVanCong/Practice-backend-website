@@ -1,0 +1,122 @@
+﻿@using HTLegal.Models
+@model E_Attorneys
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    HTLegalContext db = new HTLegalContext();
+    var attorney = db.E_CMS_Attorney.FirstOrDefault();
+}
+
+<!--Start Breadcrumb Text area-->
+<section class="breadcrumb-area" style="background: rgba(0, 0, 0, 0) url('/Content/HTLegal/img/@attorney.Logo_1920x400') no-repeat; background-position: center; background-size:cover; position: relative;">
+    <div class="breadcrumb-text-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="breadcrumb-text text-center">
+                        <h1>Luật Sư</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Breadcrumb Text area-->
+
+<!--Start Single attorney top area-->
+<section id="single-attorney-top-area">
+    <!-- Used for "fixed height" white background color-->
+</section>
+<!--End Single attorney top area-->
+
+<!--Start Single attorney area-->
+<section id="single-attorney-area">
+    <div class="container">
+        <div class="row">
+            <div class="single-attorney-inner">
+                <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                    <div class="single-attorney-left-img">
+                        <img src="~/Content/htlegal/img/attorneys/@Model.Picture_270x288" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 single-attorney-right-padding0">
+                    <div class="single-attorney-right">
+                        <img src="~/Content/htlegal/img/single-attorney-right.png" alt="">
+                        <div class="single-attorney-right-content">
+                            <div class="single-attorney-name">
+                                <h3>@Model.FullName</h3>
+                                <h5>@Model.Position</h5>
+                            </div>
+                            <div class="single-attorney-info">
+                                <ul>
+                                    <li class="single-attorney-phn">@Model.E_Users.CellPhone</li>
+                                    <li class="single-attorney-envelop">@Model.E_Users.Email</li>
+                                </ul>
+                            </div>
+                            <div class="single-attorney-socila-link">
+                                <a href="@Model.Facebook"><i class="fa fa-facebook mysocial_style"></i></a>
+                                <a href="@Model.Twifter"><i class="fa fa-twitter mysocial_style"></i></a>
+                                <a href="@Model.Google"><i class="fa fa-google-plus mysocial_style"></i></a>
+                            </div>
+                            <div class="single-attorney-title">
+                                <h3><span>Lĩnh Vực Hoạt Động:</span></h3>
+                            </div>
+                            <div class="single-attorney-law-list">
+                                @Model.PractiveAreas
+                                @*<ul class="left-law-list">
+                                    <li>Family Law</li>
+                                    <li>Business Law</li>
+                                    <li>Employment Law</li>
+                                    <li>Real Estate Law</li>
+                                </ul>
+                                <ul class="right-law-list">
+                                    <li>Family Law</li>
+                                    <li>Business Law</li>
+                                    <li>Employment Law</li>
+                                    <li>Real Estate Law</li>
+                                </ul>*@
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="single-attorney-bottom">
+                        <div class="section-title">
+                            <h2><span>Kinh Nghiệm Thực Tiễn</span></h2>
+                        </div>
+                        <div class="single-attorney-bottom-text">
+                            @Html.Raw(Model.ProfessionalExperiences)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Single attorney area-->
+
+<!--Start leave comment area-->
+<section id="leave-comment-area" class="anim-5-all">
+    <div class="container">
+        <div class="row">
+            <div class="section-title text-center">
+                <h2><span>Liên Hệ</span></h2>
+            </div>
+            <div class="col-lg-8 col-lg-offset-2">
+                <div class="leave-comment-form">
+                    <form action="/attorney/submit" method="post" role="form" target="_blank">
+                        @Html.HiddenFor(m => m.E_Users.Email)
+                        <input type="text" placeholder="Họ Tên" name="FullName">
+                        <input type="text" placeholder="Email" name="EmailClient">
+                        <input type="text" placeholder="Số Điện Thoại" name="Phone">
+                        <textarea placeholder="Tin Nhắn" name="Message"></textarea>
+                        <button type="submit">submit now <i class="fa fa-arrow-right"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End leave comment area-->

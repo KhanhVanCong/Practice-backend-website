@@ -1,0 +1,144 @@
+﻿@using HTLegal.Models
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    E_Roles rolesInfo = ViewBag.rolesInfo;
+    var currRole = ViewBag.CurrRole;
+    var p = ViewBag.p;
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/">Home</a>
+        </li>
+        <li>
+            Access Management
+        </li>
+    </ul>
+</div>
+@if(p["system_add"] == true || currRole == 2)
+{
+<a class="btn btn-primary btn-sm" href="/admin/accessmanagement/?showAddRole=0">Thêm mới nhóm quyền</a>
+}
+
+@if (TempData["error"] != null)
+{
+    <br />
+    <div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Error: </strong> @TempData["error"]
+    </div>
+
+}
+@if (TempData["success"] != null)
+{
+    <br />
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Success: </strong> @TempData["success"]
+    </div>
+}
+
+
+
+<div class="row">
+
+    <!-- create/update form -->
+    <div class="box col-md-8" @if (ViewBag.showAddRole == null) { @Html.Raw(@"style=""display:none""")  }>
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="" style="background-color: #ff6a00">
+                <h2>
+                    <i class="glyphicon glyphicon-edit"></i>@if (ViewBag.showAddRole == 0)
+                    {<span>Thêm mới nhóm quyền</span> }
+                </h2>
+            </div>
+            <div class="box-content">
+                <form action="/admin/accessmanagement/createRole/" method="post" role="form">                   
+                    <div class="form-group col-md-6">
+                        <label>Tên <span style="color:red">*</span></label>
+                        <input class="form-control" name="rolesName" id="rolesName" type="text"/>
+                    </div>
+                    <div class="form-group col-md-12 text-right">
+                        <a class="btn btn-default btn-sm" href="/admin/accessmanagement/">Cancel</a>&nbsp;
+                        <button id="submitNewRole" class="btn btn-primary btn-sm" type="submit" onclick="submitform()">Submit</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!--Accessmanagement Roled-->
+    <div class="row-fluid">
+        <div class="box col-md-12">
+            <div class="box-inner">
+                <div class="box-header well">
+                    <h2>Roles Access</h2>
+                </div>
+                <div class="box-content">
+
+
+
+                    @using (Ajax.BeginForm("ChangeRoles", null, new AjaxOptions()
+                    {
+                        HttpMethod = "Post",
+                        InsertionMode = InsertionMode.Replace,
+                        LoadingElementId = "loading",
+                        UpdateTargetId = "loadRolesAccess",
+                        OnFailure = "changeRolesFailure"
+
+                    }, new { @class = "form-inline" }))
+                    {
+
+                        <div class="form-group col-md-6" style="margin-bottom:10px">
+                            <label>Roles Access</label>
+                            <select name="RoleId" class="form-control" onchange="$(this.form).submit();">
+                                @foreach (var item in ViewBag.rolesList as List<E_Roles>)
+                                {
+                                    if (currRole <= item.Id)
+                                    {
+                                        <option @if (rolesInfo.Id == item.Id) { @Html.Raw(@"selected=""selected""")    } value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                            </select>
+                            &nbsp&nbsp
+                            <img src="~/Content/admin/img/ajax-loaders/ajax-loader-4.gif" id="loading" style="display:none;height:10px;width:30px" />
+                        </div>
+
+                    }
+                    <div class="clearfix"></div>
+                    <div id="loadRolesAccess">
+                        @Html.Partial("_RolesAccessDetail")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function changeRolesFailure(xhr, status, error) {
+            alert(xhr.responseText);
+        };
+        $('#submitNewRole').click(function () {
+            var name = $.trim($('#rolesName').val());
+            if (name === "" ) {
+                alert('Quý khách vui lòng nhập đầy đủ các thông tin (*) !');
+                return false;
+            }           
+        });
+
+    </script>
+
+}

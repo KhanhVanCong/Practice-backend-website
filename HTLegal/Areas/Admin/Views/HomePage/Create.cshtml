@@ -1,0 +1,106 @@
+﻿@using HTLegal.Models
+@model E_Home_Slide
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <a href="/admin/homepage/Index">Home</a>
+        </li>
+        <li>
+            <b>Banner</b>
+        </li>
+    </ul>
+</div>
+
+<a class="btn btn-primary btn-sm" href="/admin/homepage/Index">Trở lại</a>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["success"]
+    </div>
+}
+else if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["error"]
+    </div>
+}
+
+<div class="box span4">
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2>Thiết lập thông tin sử dụng</h2>
+        </div>
+        <div class="box-content">           
+            <form action="/admin/HomePage/Create/" method="post" role="form" class="form-horizontal" enctype = "multipart/form-data" >
+                @Html.HiddenFor(w => w.Id)
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Hình ảnh </label>
+                    <div class="col-xs-4">
+                        @if(Model.Id > 0)
+                        { 
+                            <img src="~/Content/HTLegal/img/slider/@Model.Logo_1920x940_Slide" alt="No Image" width="330" height="200" />
+                        }
+                        else
+                        { 
+                            <img src="~/Content/HTLegal/img/slider/no_image.jpg" alt="No Image" width="330" height="200"/>
+                        }
+                        <br /><p class="center">Kích thước: 1920x940</p>
+                        <p class="center">
+                            <a href="#" id="btchangepicture" onclick="UploadImg()" class="btn btn-mini">Chọn Hình</a>&nbsp&nbsp<span id="nameImg"></span>&nbsp&nbsp
+                            @if (Model.Id > 0)
+                            {
+                                <a href="/admin/homepage/deleteyourpicture?id=@Model.Id" class="btn btn-mini">Xóa</a>
+                            }
+                        </p>
+                        <input type="file" id="picture" name="picture" style="display:none" />
+                    </div>
+                </div>          
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề Chính </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Title_Slide, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tiêu đề Phụ</label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.SubTitle_Slide, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label"> </label>
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function UploadImg() {
+            $("#picture").trigger('click');
+            $('#picture').change(function () {
+                var fileName = $('#picture').val().split('\\').pop();
+                $('#nameImg').html(fileName);
+            })
+        };
+
+
+    </script>
+}

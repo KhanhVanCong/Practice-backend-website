@@ -1,0 +1,109 @@
+﻿@using HTLegal.Models
+@model IEnumerable<E_Home_FeedbackClient>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var p = ViewBag.p;
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <a href="/admin/homepage/Index">Home</a>
+        </li>
+        <li>
+            <b>Khách Hàng</b>
+        </li>
+    </ul>
+</div>
+
+@if (p["home_add_client"] == true)
+{
+    <a class="btn btn-primary btn-sm" href="/admin/homepage/CreateClient">Thêm Khách Hàng mới</a>
+}
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["success"]
+    </div>
+}
+else if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["error"]
+    </div>
+}
+
+<!-- danh sach -->
+<div class="row">
+    <div class="box col-md-12">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2>Thông tin </h2>
+            </div>
+            <div class="box-content">
+                <div class="control-group">
+                    <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Icon</th>
+                                <th>Đánh giá</th>
+                                <th>Tác giả</th>
+                                <th>Thứ tự</th>
+                                @if (p["home_update_client"] == true || p["home_delete_client"] == true)
+                                {
+                                    <th>Tác Vụ</th>
+                                }
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Id
+                                    </td>
+                                    <td>
+                                        <img src="~/Content/HTLegal/img/testimonial/@item.Icon_108x108" width="108" height="108" alt="Client Icon">
+                                    </td>
+                                    <td>
+                                        @item.Content
+                                    </td>
+                                    <td>@item.Author</td>
+                                    <td style="width:63px">@item.Order</td>
+                                    @if (p["home_update_client"] == true || p["home_delete_client"] == true)
+                                    {
+                                        <td style="width:133px">
+                                            @if(p["home_update_client"] == true)
+                                            {                                          
+                                            <a class="btn btn-info  btn-xs" href="/admin/homepage/CreateClient/@item.Id">
+                                                <i class="glyphicon glyphicon-edit icon-white"></i>
+                                                Edit
+                                            </a>
+                                            }
+                                            @if(p["home_delete_client"] == true)
+                                            { 
+                                            <a class="btn btn-danger btn-xs" href="/admin/homepage/DeleteClient/@item.Id" onclick="return confirm('Bạn muốn xóa?')">
+                                                <i class="glyphicon glyphicon-trash icon-white"></i>
+                                                Delete
+                                            </a>
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

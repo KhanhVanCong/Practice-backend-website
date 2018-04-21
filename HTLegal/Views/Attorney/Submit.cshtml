@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Submit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+<section id="our-attorneys-area" class="anim-5-all home">
+    <div class="container">
+        <div class="row">
+            <div style="text-align:center">
+                @if (TempData["success"] != null)
+                {
+                    <h2><span>Cảm ơn quý khách đã đến với HTLegal</span></h2>
+                    <br />
+                    <h2><span>Chúng tôi sẽ sớm liên hệ lại với quý khách !</span></h2>
+                    <br />
+                }
+                else if (TempData["error"] != null)
+                {
+                    <h2><span>Cảm ơn quý khách đã đến với HTLegal</span></h2>
+                    <br />
+                    <h2><span>Xảy ra lỗi !</span></h2>
+                    <br />
+                }
+
+            </div>
+        </div>
+    </div>
+</section>
+

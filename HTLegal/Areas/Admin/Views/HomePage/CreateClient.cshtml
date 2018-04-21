@@ -1,0 +1,123 @@
+﻿@using HTLegal.Models
+@model E_Home_FeedbackClient
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="/admin/home/dashboard">Trang chủ</a>
+        </li>
+        <li>
+            <a href="/admin/homepage/Index">Home</a>
+        </li>
+        <li>
+            <b>Đánh giá của Khách Hàng</b>
+        </li>
+    </ul>
+</div>
+
+<a class="btn btn-primary btn-sm" href="/admin/homepage/client">Trở lại</a>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["success"]
+    </div>
+}
+else if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["error"]
+    </div>
+}
+
+<div class="box span4">
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2>Thiết lập thông tin </h2>
+        </div>
+        <div class="box-content">
+            <form action="/admin/HomePage/CreateClient/" method="post" role="form" class="form-horizontal" enctype="multipart/form-data">
+                @Html.HiddenFor(w => w.Id)
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Hình ảnh </label>
+                    <div class="col-xs-4">
+                        @if (Model.Id > 0)
+                        {
+                            
+                            <img class="center" src="~/Content/HTLegal/img/testimonial/@Model.Icon_108x108" alt="No Image" />
+                        }
+                        else
+                        {
+                            <img src="~/Content/HTLegal/img/slider/no_image.jpg" alt="No Image" width="330" height="200" />
+                        }
+                        <br /><p class="center">Kích thước: 108x108</p>
+                        <p class="center">
+                            <a href="#" id="btchangepicture" onclick="UploadImg()" class="btn btn-mini">Chọn Hình</a>&nbsp&nbsp<span id="nameImg"></span>&nbsp&nbsp
+                            @if (Model.Id > 0)
+                            {
+                                <a href="/admin/homepage/deleteLogoClient?id=@Model.Id" class="btn btn-mini">Xóa</a>
+                            }
+                        </p>
+                        <input type="file" id="picture" name="picture" style="display:none" />
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Nội dung đánh giá </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Content, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Tác giả </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Author, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Thứ tự </label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(w => w.Order, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label"> </label>
+                    <div class="col-xs-4">
+                        <button id="submit" type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function UploadImg() {
+            $("#picture").trigger('click');
+            $('#picture').change(function () {
+                var fileName = $('#picture').val().split('\\').pop();
+                $('#nameImg').html(fileName);
+            })
+        };
+
+        $('#submit').click(function () {
+            var order = $.trim($('#Order').val());
+            if ($.isNumeric(order) == false) {
+                alert('Quý khách vui lòng nhập số thứ tự');
+                return false;
+            }
+
+        });
+
+
+    </script>
+}

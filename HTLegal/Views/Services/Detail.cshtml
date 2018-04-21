@@ -1,0 +1,88 @@
+﻿@using HTLegal.Models
+@model E_Services
+
+@{
+    ViewBag.Title = "Detail";
+    HTLegalContext db = new HTLegalContext();
+    var services = db.E_CMS_Services.FirstOrDefault();
+}
+
+<!--Start Breadcrumb Text area-->
+<section class="breadcrumb-area" style="background: rgba(0, 0, 0, 0) url('/Content/HTLegal/img/@services.Logo_1920x400') no-repeat; background-position: center; background-size:cover; position: relative;">
+    <div class="breadcrumb-text-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="breadcrumb-text text-center">
+                        <h1>Dịch Vụ</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Breadcrumb Text area-->
+
+<!--Start we have best attorney Area title -->
+<section id="we-have-best-attorney-area-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="best-attorney">
+                    <div class="section-title text-center">
+                        <span>@services.SubTitle</span>
+                        <h2><span>@services.Title</span></h2>
+                        <p>@services.Content</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End we have best attorney Area title -->
+
+<!--Start tab menu area css-->
+<div class="practive-v1-tabmenu-area" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--End tab menu area css-->
+
+        <!--Start tab all content area-->
+<section id="tab-all-content-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="tab-content tab-info">
+                    <!--Start Single tab pane-->
+                    <article class="tab-pane fade in active" id="t1">
+                        <div class="row tab-1-top">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-lg-12">
+                                <div class="tab-1-left">
+                                    <img src="~/Content/htlegal/img/practice/@Model.Image_374x219" alt="">
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                <div class="tab-1-right">
+                                    <div class="section-title">
+                                        <h2><span>@Model.Title</span></h2>
+                                    </div>
+                                    <div class="tab-1-right-text">
+                                        @Html.Raw(Model.Content)
+                                    </div>
+                            </div>
+                        </div>
+                    </article>
+                    <!--End Single tab pane-->
+
+                </section>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End tab all content area-->
